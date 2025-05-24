@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - MMO Pro Store{% endblock %}
+
+{% block content %}
+<section class="product-detail-section">
+    <div class="product-detail-container">
+        <div class="product-showcase">
+            <div class="product-main-info">
+                <div class="product-icon-large">{{ product.icon }}</div>
+                <div class="product-info">
+                    <h1>{{ product.name }}</h1>
+                    <p class="product-category">{{ product.category }}</p>
+                    <p class="product-description">{{ product.description }}</p>
+                    <div class="product-price">
+                        <span class="price">{{ "{:,}".format(product.price) }} VNĐ</span>
+                    </div>
+                    <div class="product-actions">
+                        {% if current_user and current_user.username %}
+                            <a href="{{ url_for('buy_product', product_id=product.id, version_client=product.version_client) }}" class="buy-button-large">
+                                🛒 Mua Ngay
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="buy-button-large">
+                                🔐 Đăng nhập để mua
+                            </a>
+                        {% endif %}
+                        <button class="wishlist-button">❤️ Yêu thích</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-details">
+            <div class="detail-tabs">
+                <button class="tab-button active" data-tab="features">Tính năng</button>
+                <button class="tab-button" data-tab="requirements">Yêu cầu hệ thống</button>
+                <button class="tab-button" data-tab="tutorial">Hướng dẫn</button>
+                <button class="tab-button" data-tab="reviews">Đánh giá</button>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="features">
+                    <h3>Tính năng chính</h3>
+                    {% if product.features %}
+                        <ul class="features-list">
+                            {% for feature in product.features.split('|') %}
+                                <li>✅ {{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    
+                    <div class="feature-highlights">
+                        <div class="highlight-item">
+                            <div class="highlight-icon">🚀</div>
+                            <div class="highlight-text">
+                                <h4>Hiệu suất cao</h4>
+                                <p>Tối ưu hóa để chạy mượt mà trên mọi cấu hình</p>
+                            </div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">🛡️</div>
+                            <div class="highlight-text">
+                                <h4>An toàn tuyệt đối</h4>
+                                <p>Không phát hiện bởi hệ thống anti-cheat</p>
+                            </div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">🔄</div>
+                            <div class="highlight-text">
+                                <h4>Cập nhật liên tục</h4>
+                                <p>Luôn tương thích với phiên bản game mới nhất</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="requirements">
+                    <h3>Yêu cầu hệ thống</h3>
+                    <div class="requirements-grid">
+                        <div class="req-column">
+                            <h4>Tối thiểu</h4>
+                            <ul>
+                                <li><strong>OS:</strong> Windows 10 64-bit</li>
+                                <li><strong>RAM:</strong> 4GB</li>
+                                <li><strong>CPU:</strong> Intel i3 hoặc AMD tương đương</li>
+                                <li><strong>Ổ cứng:</strong> 500MB trống</li>
+                                <li><strong>Mạng:</strong> Kết nối Internet ổn định</li>
+                            </ul>
+                        </div>
+                        <div class="req-column">
+                            <h4>Khuyến nghị</h4>
+                            <ul>
+                                <li><strong>OS:</strong> Windows 11 64-bit</li>
+                                <li><strong>RAM:</strong> 8GB</li>
+                                <li><strong>CPU:</strong> Intel i5 gen 8+ hoặc AMD Ryzen 5</li>
+                                <li><strong>Ổ cứng:</strong> 1GB trống (SSD)</li>
+                                <li><strong>Mạng:</strong> Băng thông cao</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="tutorial">
+                    <h3>Hướng dẫn cài đặt và sử dụng</h3>
+                    <div class="tutorial-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Tải và cài đặt</h4>
+                                <p>Sau khi mua, tải file về và giải nén vào thư mục mong muốn</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Kích hoạt license</h4>
+                                <p>Chạy file .exe và nhập key license được gửi qua email</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Cấu hình cơ bản</h4>
+                                <p>Thiết lập các thông số phù hợp với game và mục tiêu của bạn</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Bắt đầu sử dụng</h4>
+                                <p>Khởi động game và bật phần mềm để bắt đầu tự động hóa</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="reviews">
+                    <h3>Đánh giá từ khách hàng</h3>
+                    <div class="reviews-summary">
+                        <div class="rating-overview">
+                            <div class="rating-score">4.8</div>
+                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                            <div class="rating-count">256 đánh giá</div>
+                        </div>
+                    </div>
+                    
+                    <div class="reviews-list">
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-name">GameMaster2024</div>
+                                <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                                <div class="review-date">2 ngày trước</div>
+                            </div>
+                            <p class="review-text">Phần mềm chạy rất ổn định, đã dùng 1 tháng không gặp vấn đề gì. Tính năng đa dạng và dễ sử dụng!</p>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-name">ProGamer_VN</div>
+                                <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                                <div class="review-date">1 tuần trước</div>
+                            </div>
+                            <p class="review-text">Giá cả hợp lý, hiệu quả tốt. Support team rất nhiệt tình. Highly recommended!</p>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-name">MMO_Lover</div>
+                                <div class="review-rating">⭐⭐⭐⭐</div>
+                                <div class="review-date">2 tuần trước</div>
+                            </div>
+                            <p class="review-text">Tính năng nhiều, giao diện đẹp. Chỉ có điều hơi tốn RAM một chút thôi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <div class="related-products">
+            <h3>Sản phẩm liên quan</h3>
+            <div class="related-grid">
+                <!-- <div class="related-item">
+                    <span class="related-icon">🎮</span>
+                    <h4>Auto Farm Pro</h4>
+                    <p>299,000 VNĐ</p>
+                </div>
+                <div class="related-item">
+                    <span class="related-icon">⚔️</span>
+                    <h4>Combat Assistant</h4>
+                    <p>399,000 VNĐ</p>
+                </div>
+                <div class="related-item">
+                    <span class="related-icon">💰</span>
+                    <h4>Trade Bot Elite</h4>
+                    <p>599,000 VNĐ</p> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

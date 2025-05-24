@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Thêm Sản Phẩm Mới - Admin{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Thêm Sản Phẩm Mới</h2>
+            <form method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="name">Tên sản phẩm</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="icon">Icon (emoji hoặc ký tự)</label>
+                    <input type="text" id="icon" name="icon" maxlength="2" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Mô tả</label>
+                    <textarea id="description" name="description" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Giá (VNĐ)</label>
+                    <input type="number" id="price" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Danh mục</label>
+                    <input type="text" id="category" name="category" value="Facebook Tool" required>
+                </div>
+                <div class="form-group">
+                    <label for="features">Tính năng chính <span style="color:#00ffff;">(mỗi tính năng cách nhau bằng dấu |)</span></label>
+                    <input type="text" id="features" name="features" placeholder="Auto post|Quét UID|Tăng tương tác" required>
+                </div>
+                <div class="form-group">
+                    <label for="download_link">Link tải (hoặc hướng dẫn)</label>
+                    <input type="text" id="download_link" name="download_link" required>
+                </div>
+                <button type="submit" class="auth-button">Thêm sản phẩm</button>
+            </form>
+            <div class="auth-links">
+                <a href="{{ url_for('admin_dashboard') }}">← Quay lại trang quản trị</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

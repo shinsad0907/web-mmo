@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Nạp tiền - MMO Pro Store{% endblock %}
+
+{% block content %}
+<section class="recharge-section">
+    <div class="recharge-container">
+        <div class="recharge-card">
+            <h2>💰 Nạp Tiền Vào Tài Khoản</h2>
+            <p class="recharge-desc">Chọn mức tiền muốn nạp để mua sản phẩm</p>
+            
+            <form method="POST" class="recharge-form">
+                <div class="amount-options">
+                    <div class="amount-grid">
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="50000">
+                            <div class="amount-card">
+                                <div class="amount-value">50,000 VNĐ</div>
+                                <div class="amount-bonus">Cơ bản</div>
+                            </div>
+                        </label>
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="100000">
+                            <div class="amount-card">
+                                <div class="amount-value">100,000 VNĐ</div>
+                                <div class="amount-bonus">Phổ biến</div>
+                            </div>
+                        </label>
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="200000">
+                            <div class="amount-card">
+                                <div class="amount-value">200,000 VNĐ</div>
+                                <div class="amount-bonus">+5% Bonus</div>
+                            </div>
+                        </label>
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="500000">
+                            <div class="amount-card">
+                                <div class="amount-value">500,000 VNĐ</div>
+                                <div class="amount-bonus">+10% Bonus</div>
+                            </div>
+                        </label>
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="1000000">
+                            <div class="amount-card">
+                                <div class="amount-value">1,000,000 VNĐ</div>
+                                <div class="amount-bonus">+15% Bonus</div>
+                            </div>
+                        </label>
+                        <label class="amount-option">
+                            <input type="radio" name="amount" value="2000000">
+                            <div class="amount-card">
+                                <div class="amount-value">2,000,000 VNĐ</div>
+                                <div class="amount-bonus">+20% Bonus</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <h3>Phương thức thanh toán</h3>
+                    <div class="methods-grid">
+                        <label class="method-option">
+                            <input type="radio" name="payment_method" value="momo" checked>
+                            <div class="method-card">
+                                <div class="method-icon">📱</div>
+                                <div class="method-name">MoMo</div>
+                            </div>
+                        </label>
+                        <label class="method-option">
+                            <input type="radio" name="payment_method" value="banking">
+                            <div class="method-card">
+                                <div class="method-icon">🏦</div>
+                                <div class="method-name">Banking</div>
+                            </div>
+                        </label>
+                        <label class="method-option">
+                            <input type="radio" name="payment_method" value="card">
+                            <div class="method-card">
+                                <div class="method-icon">💳</div>
+                                <div class="method-name">Thẻ ATM</div>
+                            </div>
+                        </label>
+                        <label class="method-option">
+                            <input type="radio" name="payment_method" value="scratch">
+                            <div class="method-card">
+                                <div class="method-icon">🎫</div>
+                                <div class="method-name">Thẻ cào</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="recharge-summary">
+                    <div class="summary-row">
+                        <span>Số tiền nạp:</span>
+                        <span id="selected-amount">Chưa chọn</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Phí giao dịch:</span>
+                        <span class="fee">Miễn phí</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Tổng cộng:</span>
+                        <span id="total-amount">0 VNĐ</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="recharge-button">
+                    🚀 Tiến Hành Nạp Tiền
+                </button>
+            </form>
+
+            <div class="recharge-note">
+                <h4>📝 Lưu ý quan trọng:</h4>
+                <ul>
+                    <li>Số tiền sẽ được cộng vào tài khoản trong vòng 1-5 phút</li>
+                    <li>Liên hệ support nếu sau 10 phút chưa nhận được tiền</li>
+                    <li>Giao dịch từ 200,000 VNĐ trở lên sẽ có bonus thêm</li>
+                    <li>Không hoàn tiền trong mọi trường hợp</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

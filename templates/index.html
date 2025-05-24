@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <div class="hero-content">
+        <h1>Phần Mềm MMO Chuyên Nghiệp</h1>
+        <p>Công cụ tự động hóa mạnh mẽ cho game thủ MMO. Tăng hiệu quả, tiết kiệm thời gian, tối ưu lợi nhuận!</p>
+        <a href="#products" class="cta-button">Khám Phá Ngay</a>
+    </div>
+</section>
+
+<!-- Products Section -->
+<section class="products fade-in" id="products">
+    <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <span class="product-icon">{{ product.icon }}</span>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <div class="price">{{ "{:,}".format(product.price) }} VNĐ</div>
+            <a href="{{ url_for('product_detail', product_id=product.id) }}" class="buy-button">Xem chi tiết</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features fade-in" id="features">
+    <div class="features-container">
+        <h2 class="section-title">Tại Sao Chọn Chúng Tôi?</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🛡️</div>
+                <h3>An Toàn 100%</h3>
+                <p>Phần mềm được mã hóa và bảo vệ khỏi phát hiện</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🚀</div>
+                <h3>Hiệu Suất Cao</h3>
+                <p>Tối ưu hóa để chạy mượt mà, không lag game</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔄</div>
+                <h3>Cập Nhật Liên Tục</h3>
+                <p>Luôn tương thích với phiên bản game mới nhất</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <h3>Dễ Sử Dụng</h3>
+                <p>Giao diện thân thiện, không cần kiến thức kỹ thuật</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💬</div>
+                <h3>Hỗ Trợ 24/7</h3>
+                <p>Team support luôn sẵn sàng giúp đỡ bạn</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💎</div>
+                <h3>Chất Lượng Premium</h3>
+                <p>Được phát triển bởi team chuyên nghiệp</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

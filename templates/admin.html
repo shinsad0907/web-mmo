@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Quản Trị Website - Admin{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="admin-container">
+        <div class="admin-card">
+            <div class="admin-header">
+                <div class="admin-avatar">👑</div>
+                <div class="admin-info">
+                    <h2>Xin chào, {{ user.username }}</h2>
+                    <p>Quyền: <b>Admin</b></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quản lý thành viên -->
+        <h3>Quản Lý Thành Viên</h3>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Tên đăng nhập</th>
+                    <th>Email</th>
+                    <th>Số dư</th>
+                    <th>Số sản phẩm đã mua</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                <tr>
+                    <td>{{ member.username }}</td>
+                    <td>{{ member.email }}</td>
+                    <td>{{ (member.balance or 0) }} VNĐ</td>
+                    <td>{{ (member.purchases or [])|length }}</td>
+                    <td>
+                        <a href="#" class="action-btn">Nạp tiền</a>
+                        <a href="#" class="action-btn danger">Xóa</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Quản lý dòng tiền -->
+        <h3>Lịch Sử Giao Dịch</h3>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Thành viên</th>
+                    <th>Loại giao dịch</th>
+                    <th>Số tiền</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                <tr>
+                    <td>{{ tx.username }}</td>
+                    <td>{{ tx.type }}</td>
+                    <td>{{ (tx.amount) }} VNĐ</td>
+                    <td>{{ tx.time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Quản lý sản phẩm -->
+        <!-- ... -->
+        <h3>Quản Lý Sản Phẩm</h3>
+        <a href="{{ url_for('add_product') }}" class="add-btn">➕ Thêm sản phẩm mới</a>
+        <!-- ... -->
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Icon</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Danh mục</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prod in products %}
+                <tr>
+                    <td style="font-size:1.5rem;">{{ prod.icon }}</td>
+                    <td>{{ prod.name }}</td>
+                    <td>{{ (prod.price) }} VNĐ</td>
+                    <td>{{ prod.category }}</td>
+                    <td>
+                        <a href="#" class="action-btn">Sửa</a>
+                        <a href="#" class="action-btn danger">Xóa</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

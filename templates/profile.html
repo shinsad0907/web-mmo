@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - MMO Pro Store{% endblock %}
+
+{% block content %}
+<section class="profile-section">
+    <div class="profile-container">
+        <!-- User Info Card -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-info">
+                    <h2>{{ user.username }}</h2>
+                    <p>{{ user.email }}</p>
+                </div>
+            </div>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{ user.balance|default(0)|vnd }}</div>
+                    <div class="stat-label">Số dư (VNĐ)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ purchases|length }}</div>
+                    <div class="stat-label">Sản phẩm đã mua</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ purchases|sum(attribute='download_count') }}</div>
+                    <div class="stat-label">Lượt tải</div>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <a href="{{ url_for('recharge') }}" class="action-button">💰 Nạp tiền</a>
+                <a href="#" class="action-button">⚙️ Cài đặt</a>
+            </div>
+        </div>
+
+        <!-- Purchase History -->
+        <div class="purchases-section">
+            <h3>Lịch Sử Mua Hàng</h3>
+            {% if purchases %}
+                <div class="purchases-grid">
+                    {% for purchase in purchases %}
+                    <div class="purchase-card">
+                        <div class="purchase-header">
+                            <span class="product-icon">{{ purchase.icon }}</span>
+                            <div class="purchase-info">
+                                <h4>{{ purchase.name }}</h4>
+                                <p class="purchase-date">{{ purchase.purchase_date[:16] }}</p>
+                            </div>
+                            <div class="purchase-price">{{ purchase.price|vnd }} VNĐ</div>
+                        </div>
+                        <!-- ...trong purchases-grid... -->
+                        <div class="purchase-stats">
+                            <span class="download-count">Đã tải: {{ purchase.download_count }} lần</span><br>
+                            <span class="purchase-key">🔑 Key: <b>{{ purchase.key }}</b></span>
+                        </div>
+                        <div class="purchase-actions">
+                            <a href="{{ url_for('download_product', purchase_id=purchase.id) }}" 
+                               class="download-button">⬇️ Tải xuống</a>
+                            <a href="{{ url_for('product_detail', product_id=purchase.product_id) }}" 
+                               class="info-button">ℹ️ Chi tiết</a>
+                        </div>
+                    </div>
+                    
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">🛒</div>
+                    <h4>Chưa có sản phẩm nào</h4>
+                    <p>Hãy khám phá và mua sản phẩm đầu tiên của bạn!</p>
+                    <a href="{{ url_for('home') }}#products" class="cta-button">Xem sản phẩm</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3>Thao Tác Nhanh</h3>
+            <div class="actions-grid">
+                <div class="action-card">
+                    <div class="action-icon">🔄</div>
+                    <h4>Cập nhật phần mềm</h4>
+                    <p>Kiểm tra phiên bản mới nhất</p>
+                    <button class="action-btn">Kiểm tra</button>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">💬</div>
+                    <h4>Hỗ trợ kỹ thuật</h4>
+                    <p>Liên hệ team support</p>
+                    <button class="action-btn">Chat ngay</button>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">📖</div>
+                    <h4>Hướng dẫn sử dụng</h4>
+                    <p>Xem tutorial và tips</p>
+                    <button class="action-btn">Xem ngay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
