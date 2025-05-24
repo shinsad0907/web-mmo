@@ -1,3 +1,5 @@
-Flask==3.0.3
+Flask==2.3.3
+supabase==2.8.0
+cryptography==42.0.7
+python-dateutil==2.9.0.post0
 requests==2.32.3
-supabase==0.4.0
