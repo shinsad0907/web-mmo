@@ -38,7 +38,26 @@ class User:
         except Exception as e:
             print(f"Error: {e}")
             return False
-
+        
+    def update_purchase_version_client(self, username, purchase_id, new_version_client):
+        user = self.get_user_by_username(username)
+        if not user:
+            return False
+        purchases = user.get('purchases', [])
+        updated = False
+        for p in purchases:
+            if p['id'] == purchase_id:
+                p['version_client'] = new_version_client
+                updated = True
+                break
+        if not updated:
+            return False
+        try:
+            self.supabase.table("data_user").update({"purchases": purchases}).eq("username", username).execute()
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
     def login_user(self, username, password):
         user = self.get_user_by_username(username)
         return user and user['password'] == password
