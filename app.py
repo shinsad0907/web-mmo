@@ -288,13 +288,13 @@ def download_product(purchase_id):
         flash('Không tìm thấy sản phẩm!', 'error')
         return redirect(url_for('profile'))
 
-    user_obj.increment_download_count(purchase_id, user['username'])
 
     base_link = product["download_link"]  # vd: https://github.com/voletrieulan0907/tool_changemail
     version = product["version"]    
     version_client = product['version_client']      # vd: v0.0.6
     filename = "MyApp-windows.zip"        # hoặc lấy từ product nếu muốn tuỳ biến
     user_obj = User()
+    user_obj.increment_download_count(purchase_id, user['username'],version_client)
     user_obj.update_purchase_version_client(user['username'], version_client)
     # Tạo link tải GitHub theo cấu trúc:
     # https://github.com/<repo>/releases/download/<version>/<filename>

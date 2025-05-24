@@ -137,7 +137,7 @@ class User:
                 return p
         return None
 
-    def increment_download_count(self, purchase_id, username):
+    def increment_download_count(self, purchase_id, username, version_client):
         user = self.get_user_by_username(username)
         if not user:
             return False
@@ -146,7 +146,7 @@ class User:
             if p['id'] == purchase_id:
                 p['download_count'] = p.get('download_count', 0) + 1
         try:
-            self.supabase.table("data_user").update({"purchases": purchases}).eq("username", username).execute()
+            self.supabase.table("data_user").update({"purchases": purchases,"version_client":version_client}).eq("username", username).execute()
             return True
         except Exception as e:
             print(f"Error: {e}")
