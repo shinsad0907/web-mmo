@@ -76,12 +76,22 @@ class products:
             print(f"Error: {e}")
             return False
         
-    def update_product(self):
+    def update_product(self, product_id, version_client):
         data_products = self.get_products()
         for product in data_products:
-            if product['download_link']:
-                version = self.check_update(product['download_link'])
-                if version != product['version']:
-                    self.supabase.table("PRODUCTS").update({"version": version}).eq("id", product['id']).execute()
-                    self.supabase.table("PRODUCTS").update({"version_client": self.create_version_client()}).eq("id", product['id']).execute()
-                    print(f"Updated product {product['name']} to version {version}")
+            if int(product['id']) == int(product_id):
+                # Luôn update version_client
+                try:
+                    self.supabase.table("PRODUCTS").update({"version_client": version_client}).eq("id", product_id).execute()
+                    print(f"Updated version_client for product {product['name']} to {version_client}")
+                    # Nếu muốn update version khi có version mới:
+                    if product['download_link']:
+                        version = self.check_update(product['download_link'])
+                        if version and version != product['version']:
+                            self.supabase.table("PRODUCTS").update({"version": version}).eq("id", product_id).execute()
+                            print(f"Updated product {product['name']} to version {version}")
+                    return True
+                except Exception as e:
+                    print(f"Error: {e}")
+                    return False
+        return False

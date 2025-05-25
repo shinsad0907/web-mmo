@@ -14,8 +14,9 @@ from flask import send_from_directory
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here-change-this'
 
-PRODUCTS = products().get_products()
-
+def get_products():
+    PRODUCTS = products().get_products()
+    return PRODUCTS
 def get_user():
     """
     Lấy thông tin user từ database thay vì session
@@ -61,7 +62,7 @@ def inject_user():
 
 @app.route('/')
 def home():
-    return render_template('index.html', products=PRODUCTS)
+    return render_template('index.html', products=get_products())
 
 @app.route('/admin')
 def admin_dashboard():
@@ -82,13 +83,24 @@ def admin_dashboard():
         user=user,
         members=members,
         transactions=transactions,
-        products=PRODUCTS
+        products=get_products()
     )
 
 @app.route('/api/update_notify', methods=['POST'])
 def update_notify():
-    products().update_product()
-    return 'Cập nhật thông báo thành công', 200
+    data = request.get_json()
+    product_id = data.get('product_id')
+    version_client = data.get('version_client')
+
+    if not product_id or not version_client:
+        return {'error': 'Thiếu product_id hoặc version_client'}, 400
+
+    product_obj = products()
+    # Giả sử bạn có hàm update_version_client(product_id, version_client)
+    if product_obj.update_product(product_id, version_client):
+        return {'message': 'Cập nhật version_client thành công'}, 200
+    else:
+        return {'error': 'Cập nhật thất bại'}, 500
 
 @app.route('/admin/add_product', methods=['GET', 'POST'])
 def add_product():
@@ -117,7 +129,7 @@ def add_product():
             flash('Thêm sản phẩm thành công!', 'success')
             # Refresh products list
             global PRODUCTS
-            PRODUCTS = product_obj.get_products()
+            PRODUCTS = get_products()
         
         return redirect(url_for('admin_dashboard'))
     
@@ -182,7 +194,7 @@ def profile():
     purchases_info = []
     for purchase in purchases:
         # Tìm thông tin sản phẩm
-        product = next((prod for prod in PRODUCTS if prod['id'] == purchase['product_id']), None)
+        product = next((prod for prod in get_products() if prod['id'] == purchase['product_id']), None)
         if product:
             purchases_info.append({
                 'id': purchase['id'],
@@ -199,7 +211,7 @@ def profile():
 
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
-    product = next((prod for prod in PRODUCTS if prod['id'] == product_id), None)
+    product = next((prod for prod in get_products() if prod['id'] == product_id), None)
     if not product:
         flash('Sản phẩm không tồn tại!', 'error')
         return redirect(url_for('home'))
@@ -216,7 +228,7 @@ def buy_product(product_id):
         flash('Bạn đã sở hữu sản phẩm này!', 'warning')
         return redirect(url_for('profile'))
     
-    product = next((prod for prod in PRODUCTS if prod['id'] == product_id), None)
+    product = next((prod for prod in get_products() if prod['id'] == product_id), None)
     if not product:
         flash('Sản phẩm không tồn tại!', 'error')
         return redirect(url_for('home'))
@@ -282,7 +294,7 @@ def download_product(purchase_id):
     if not purchase:
         flash('Không tìm thấy sản phẩm!', 'error')
         return redirect(url_for('profile'))
-
+    PRODUCTS = products().get_products()
     product = next((prod for prod in PRODUCTS if prod['id'] == purchase['product_id']), None)
     if not product:
         flash('Không tìm thấy sản phẩm!', 'error')
@@ -295,7 +307,6 @@ def download_product(purchase_id):
     filename = "MyApp-windows.zip"        # hoặc lấy từ product nếu muốn tuỳ biến
     user_obj = User()
     user_obj.increment_download_count(purchase_id, user['username'],version_client)
-    user_obj.update_purchase_version_client(user['username'], version_client)
     # Tạo link tải GitHub theo cấu trúc:
     # https://github.com/<repo>/releases/download/<version>/<filename>
     download_url = f"{base_link}/download/{version}/{filename}"
