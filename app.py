@@ -62,7 +62,9 @@ def inject_user():
 
 @app.route('/')
 def home():
-    return render_template('index.html', products=get_products())
+    products_list = get_products()
+    print("DEBUG PRODUCTS:", products_list)
+    return render_template('index.html', products=products_list)
 
 @app.route('/admin')
 def admin_dashboard():
