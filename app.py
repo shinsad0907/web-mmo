@@ -56,64 +56,37 @@ TELEGRAM_BOT_TOKEN = "7967026247:AAHBPBbQ_AF32iHh3kUn012XSXwQTRWegI0"  # Thay th
 TELEGRAM_CHAT_ID = "5933186992"      # Thay thế chat ID của bạn
 UPLOAD_FOLDER = 'uploads'
 
-# Đảm bảo thư mục uploads tồn tại
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-def send_file_to_telegram(file_path, caption=""):
-    try:
-        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendDocument"
-        
-        with open(file_path, 'rb') as file:
-            files = {
-                'document': file
-            }
-            data = {
-                'chat_id': TELEGRAM_CHAT_ID,
-                'caption': caption
-            }
-            
-            response = requests.post(url, files=files, data=data)
-            
-            if response.status_code == 200:
-                return True
-            else:
-                print(f"Error sending file: {response.text}")
-                return False
-                
-    except Exception as e:
-        print(f"Error sending file to Telegram: {str(e)}")
-        return False
 
 @app.route('/api/upload-to-telegram', methods=['POST'])
 def upload_to_telegram():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file provided'}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
-
     try:
-        # Save temporary file
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+
+        # Read file content directly from memory
+        file_content = file.read()
         
-        # Send file to Telegram
-        caption = request.form.get('caption', '')
-        success = send_file_to_telegram(filepath, caption)
+        # Send to Telegram using direct content
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendDocument"
+        files = {
+            'document': (file.filename, file_content)
+        }
+        data = {
+            'chat_id': TELEGRAM_CHAT_ID,
+            'caption': request.form.get('caption', '')
+        }
         
-        # Delete temporary file after sending
-        os.remove(filepath)
+        tg_response = requests.post(url, files=files, data=data)
         
-        if success:
-            return jsonify({'message': 'File sent successfully'}), 200
+        if tg_response.status_code == 200:
+            return jsonify({'message': 'File sent successfully', 'telegram_response': tg_response.json()}), 200
         else:
-            return jsonify({'error': 'Failed to send file'}), 500
-            
+            return jsonify({'error': 'Telegram API error', 'details': tg_response.text}), 500
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 @app.template_filter('vnd')
