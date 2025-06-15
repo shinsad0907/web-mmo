@@ -7,7 +7,9 @@ from cryptography.fernet import Fernet
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import base64
-import hashlib
+import requests
+import os
+from werkzeug.utils import secure_filename
 import json
 from flask import send_from_directory
 
@@ -49,6 +51,71 @@ def generate_key(secret, user_id, random_code):
     encoded = base64.urlsafe_b64encode(json_str.encode()).decode()
     return encoded
 
+# Thêm config cho Telegram
+TELEGRAM_BOT_TOKEN = "7967026247:AAHBPBbQ_AF32iHh3kUn012XSXwQTRWegI0"  # Thay thế token của bạn
+TELEGRAM_CHAT_ID = "5933186992"      # Thay thế chat ID của bạn
+UPLOAD_FOLDER = 'uploads'
+
+# Đảm bảo thư mục uploads tồn tại
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def send_file_to_telegram(file_path, caption=""):
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendDocument"
+        
+        with open(file_path, 'rb') as file:
+            files = {
+                'document': file
+            }
+            data = {
+                'chat_id': TELEGRAM_CHAT_ID,
+                'caption': caption
+            }
+            
+            response = requests.post(url, files=files, data=data)
+            
+            if response.status_code == 200:
+                return True
+            else:
+                print(f"Error sending file: {response.text}")
+                return False
+                
+    except Exception as e:
+        print(f"Error sending file to Telegram: {str(e)}")
+        return False
+
+@app.route('/api/upload-to-telegram', methods=['POST'])
+def upload_to_telegram():
+    if 'file' not in request.files:
+        return {'error': 'No file provided'}, 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return {'error': 'No file selected'}, 400
+
+    try:
+        # Lưu file tạm thời
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        # Gửi file lên Telegram
+        caption = request.form.get('caption', '')
+        success = send_file_to_telegram(filepath, caption)
+        
+        # Xóa file tạm sau khi gửi
+        os.remove(filepath)
+        
+        if success:
+            return {'message': 'File sent successfully'}, 200
+        else:
+            return {'error': 'Failed to send file'}, 500
+            
+    except Exception as e:
+        return {'error': str(e)}, 500
 @app.template_filter('vnd')
 def vnd_format(value):
     try:
