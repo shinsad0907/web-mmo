@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash,jsonify
 import random
 import string
 from static.py.data_user import User
@@ -90,32 +90,32 @@ def send_file_to_telegram(file_path, caption=""):
 @app.route('/api/upload-to-telegram', methods=['POST'])
 def upload_to_telegram():
     if 'file' not in request.files:
-        return {'error': 'No file provided'}, 400
+        return jsonify({'error': 'No file provided'}), 400
     
     file = request.files['file']
     if file.filename == '':
-        return {'error': 'No file selected'}, 400
+        return jsonify({'error': 'No file selected'}), 400
 
     try:
-        # Lưu file tạm thời
+        # Save temporary file
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        # Gửi file lên Telegram
+        # Send file to Telegram
         caption = request.form.get('caption', '')
         success = send_file_to_telegram(filepath, caption)
         
-        # Xóa file tạm sau khi gửi
+        # Delete temporary file after sending
         os.remove(filepath)
         
         if success:
-            return {'message': 'File sent successfully'}, 200
+            return jsonify({'message': 'File sent successfully'}), 200
         else:
-            return {'error': 'Failed to send file'}, 500
+            return jsonify({'error': 'Failed to send file'}), 500
             
     except Exception as e:
-        return {'error': str(e)}, 500
+        return jsonify({'error': str(e)}), 500
 @app.template_filter('vnd')
 def vnd_format(value):
     try:
