@@ -54,7 +54,7 @@ def generate_key(secret, user_id, random_code):
 
 # Thêm config cho Telegram
 TELEGRAM_BOT_TOKEN = "7967026247:AAHBPBbQ_AF32iHh3kUn012XSXwQTRWegI0"  # Thay thế token của bạn
-TELEGRAM_CHAT_ID = "-1002444601669"      # Thay thế chat ID của bạn
+TELEGRAM_CHAT_ID = "5933186992"      # Thay thế chat ID của bạn
 UPLOAD_FOLDER = 'uploads'
 
 
