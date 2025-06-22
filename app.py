@@ -12,6 +12,7 @@ import os
 from werkzeug.utils import secure_filename
 import json
 from flask import send_from_directory
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here-change-this'
@@ -71,8 +72,11 @@ def upload_to_telegram():
         file_content = file.read()
 
         # Nội dung caption mặc định
+        today_str = datetime.now().strftime('%d/%m/%Y')
+
+        # Nội dung caption mặc định có chèn ngày tự động
         default_caption = (
-            "📢 [CẬP NHẬT VIA CLONE – 22/06/2025]\n\n"
+            f"📢 [CẬP NHẬT VIA CLONE – {today_str}]\n\n"
             "Đã gửi thêm lô VIA Poland dưới 2015 – IP Poland 🇵🇱\n"
             "Clone sạch – login ổn định – chưa đụng chạm gì nhiều\n"
             "Anh em nào cần thì inbox nhận list 📥\n\n"
