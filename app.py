@@ -67,21 +67,33 @@ def upload_to_telegram():
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
 
-        # Read file content directly from memory
+        # Đọc nội dung file
         file_content = file.read()
-        
-        # Send to Telegram using direct content
+
+        # Nội dung caption mặc định
+        default_caption = (
+            "📢 [CẬP NHẬT VIA CLONE – 22/06/2025]\n\n"
+            "Đã gửi thêm lô VIA Poland dưới 2015 – IP Poland 🇵🇱\n"
+            "Clone sạch – login ổn định – chưa đụng chạm gì nhiều\n"
+            "Anh em nào cần thì inbox nhận list 📥\n\n"
+            "💸 MB Bank – 090720072018 – Lộc Lá"
+        )
+
+        # Cho phép caption tùy chỉnh nếu có, nếu không thì dùng mặc định
+        caption = request.form.get('caption', default_caption)
+
+        # Gửi file tới Telegram
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendDocument"
         files = {
             'document': (file.filename, file_content)
         }
         data = {
             'chat_id': TELEGRAM_CHAT_ID,
-            'caption': request.form.get('caption', '')
+            'caption': caption
         }
-        
+
         tg_response = requests.post(url, files=files, data=data)
-        
+
         if tg_response.status_code == 200:
             return jsonify({'message': 'File sent successfully', 'telegram_response': tg_response.json()}), 200
         else:
