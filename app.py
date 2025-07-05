@@ -47,7 +47,7 @@ def generate_key(secret, user_id, random_code,date_key_part):
         "secret": secret,
         "user": user_id,
         "rand": random_code,
-        "date_time": date_key_part,
+        "date_time": date_key_part
     }
     json_str = json.dumps(data)
     encoded = base64.urlsafe_b64encode(json_str.encode()).decode()
