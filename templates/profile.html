@@ -49,10 +49,23 @@
                             </div>
                             <div class="purchase-price">{{ purchase.price|vnd }} VNĐ</div>
                         </div>
-                        <!-- ...trong purchases-grid... -->
+                        <!-- Updated purchase-stats section -->
                         <div class="purchase-stats">
                             <span class="download-count">Đã tải: {{ purchase.download_count }} lần</span><br>
-                            <span class="purchase-key">🔑 Key: <b>{{ purchase.key }}</b></span>
+                            <div class="purchase-key-section">
+                                <span class="purchase-key-label">🔑 Key:</span>
+                                <div class="key-container">
+                                    <input type="text" 
+                                           id="key-{{ purchase.id }}" 
+                                           class="key-input" 
+                                           value="{{ purchase.key }}" 
+                                           readonly>
+                                    <button class="copy-key-btn" 
+                                            onclick="copyKey('{{ purchase.id }}')">
+                                        📋 Copy
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="purchase-actions">
                             <a href="{{ url_for('download_product', purchase_id=purchase.id) }}" 
@@ -100,4 +113,130 @@
         </div>
     </div>
 </section>
+
+<style>
+/* Styles for key section */
+.purchase-key-section {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.purchase-key-label {
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.key-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+.key-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background: #2a2a2a;
+    color: #fff;
+    font-size: 12px;
+    font-family: monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 300px;
+}
+
+.copy-key-btn {
+    padding: 8px 12px;
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+.copy-key-btn:hover {
+    background: linear-gradient(45deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.copy-key-btn:active {
+    transform: translateY(0);
+}
+
+.copy-key-btn.copied {
+    background: linear-gradient(45deg, #28a745 0%, #20c997 100%);
+    animation: copySuccess 0.3s ease;
+}
+
+@keyframes copySuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .key-container {
+        flex-direction: column;
+    }
+    
+    .key-input {
+        max-width: 100%;
+    }
+    
+    .copy-key-btn {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+function copyKey(purchaseId) {
+    const keyInput = document.getElementById(`key-${purchaseId}`);
+    const copyBtn = keyInput.parentElement.querySelector('.copy-key-btn');
+    
+    // Select and copy the key
+    keyInput.select();
+    keyInput.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        // Try using the modern clipboard API
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(keyInput.value).then(() => {
+                showCopySuccess(copyBtn);
+            });
+        } else {
+            // Fallback for older browsers
+            document.execCommand('copy');
+            showCopySuccess(copyBtn);
+        }
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        // Fallback method
+        document.execCommand('copy');
+        showCopySuccess(copyBtn);
+    }
+}
+
+function showCopySuccess(button) {
+    const originalText = button.innerHTML;
+    button.innerHTML = '✅ Copied!';
+    button.classList.add('copied');
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.classList.remove('copied');
+    }, 2000);
+}
+</script>
 {% endblock %}
