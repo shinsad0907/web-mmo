@@ -42,11 +42,12 @@ def generate_random_code(length=3):
     characters = string.ascii_uppercase + string.digits  # VD: A-Z, 0-9
     return ''.join(random.choices(characters, k=length))
 
-def generate_key(secret, user_id, random_code):
+def generate_key(secret, user_id, random_code,date_key_part):
     data = {
         "secret": secret,
         "user": user_id,
-        "rand": random_code
+        "rand": random_code,
+        "date_time": date_key_part,
     }
     json_str = json.dumps(data)
     encoded = base64.urlsafe_b64encode(json_str.encode()).decode()
@@ -304,8 +305,7 @@ def buy_product(product_id):
     # Tạo ngày hết hạn = hôm nay + 1 tháng
     expire_dt = datetime.now() + relativedelta(months=1)
     date_key_part = expire_dt.strftime("%Y-%m-%d")  # Dùng phần ngày để tạo key
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    key = generate_key("voletrieulan2007", user['username'], generate_random_code(), timestamp)
+    key = generate_key("voletrieulan2007", user['username'], generate_random_code(), timestamp,date_key_part)
 
     # Lưu cả encrypted_str và date_key_part vào purchase
     if user_obj.purchase_product(
