@@ -304,8 +304,8 @@ def buy_product(product_id):
     # Tạo ngày hết hạn = hôm nay + 1 tháng
     expire_dt = datetime.now() + relativedelta(months=1)
     date_key_part = expire_dt.strftime("%Y-%m-%d")  # Dùng phần ngày để tạo key
-
-    key = generate_key("voletrieulan2007", user['username'], generate_random_code())
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    key = generate_key("voletrieulan2007", user['username'], generate_random_code(), timestamp)
 
     # Lưu cả encrypted_str và date_key_part vào purchase
     if user_obj.purchase_product(
