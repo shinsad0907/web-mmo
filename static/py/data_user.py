@@ -142,11 +142,20 @@ class User:
         if not user:
             return False
         purchases = user.get('purchases', [])
+        found = False
         for p in purchases:
             if p['id'] == purchase_id:
                 p['download_count'] = p.get('download_count', 0) + 1
+                p['version_client'] = version_client  # ← SỬA: Update version_client trong purchase
+                found = True
+                break
+        
+        if not found:
+            return False
+            
         try:
-            self.supabase.table("data_user").update({"purchases": purchases,"version_client":version_client}).eq("username", username).execute()
+            # ← SỬA: Chỉ update purchases, không update version_client ở level user
+            self.supabase.table("data_user").update({"purchases": purchases}).eq("username", username).execute()
             return True
         except Exception as e:
             print(f"Error: {e}")
