@@ -24,6 +24,7 @@
             <ul class="nav-links">
                 <li><a href="{{ url_for('home') }}">Trang chủ</a></li>
                 <li><a href="#products">Sản phẩm</a></li>
+                <li><a href="{{ url_for('getcode') }}">Get Code</a></li>
                 <li><a href="#features">Tính năng</a></li>
                 <li><a href="#contact">Liên hệ</a></li>
                 {% if current_user and current_user.username %}
@@ -72,6 +73,9 @@
         </div>
     </footer>
 
+        <!-- ...existing code... -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/getcode.js') }}"></script>
+</body>
 </body>
 </html>

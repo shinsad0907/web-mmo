@@ -13,6 +13,8 @@ from werkzeug.utils import secure_filename
 import json
 from flask import send_from_directory
 from datetime import datetime
+from static.py.getcode import process_accounts
+import asyncio
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here-change-this'
@@ -321,7 +323,42 @@ def buy_product(product_id):
         flash('Có lỗi xảy ra khi mua hàng!', 'error')
     
     return redirect(url_for('profile'))
+@app.route('/api/get-code', methods=['POST'])
+async def get_code_api():
+    if not request.is_json:
+        return jsonify({'success': False, 'message': 'Invalid JSON'}), 400
+    
+    data = request.get_json()
+    mail_list = data.get('mail_list', [])
+    
+    if not mail_list:
+        return jsonify({'success': False, 'message': 'No mail provided'}), 400
 
+    try:
+        accounts = []
+        for mail_line in mail_list:
+            mail_line = mail_line.strip()
+            if '|' in mail_line:
+                parts = mail_line.split('|')
+                if len(parts) >= 3:
+                    accounts.append({
+                        'mail': parts[0].strip(),
+                        'pass': parts[1].strip(),
+                        'mailadd': parts[2].strip()
+                    })
+
+        results = await process_accounts(accounts)
+        
+        return jsonify({
+            'success': True,
+            'results': results
+        })
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 @app.route('/recharge', methods=['GET', 'POST'])
 def recharge():
     user = get_user()
@@ -370,6 +407,13 @@ def download_product(purchase_id):
     download_url = f"{base_link}/download/{version}/{filename}"
 
     return redirect(download_url)
+
+@app.route('/getcode')
+def getcode():
+    user = get_user()
+    if not user:
+        return redirect(url_for('login'))
+    return render_template('getcode.html')
 
 # https://github.com/voletrieulan0907/tool_changemail/releases/download/v0.0.6/MyApp-windows.zip
 if __name__ == '__main__':

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Get Code - MMO Pro Store{% endblock %}
+
+{% block content %}
+<div class="getcode-section">
+    <div class="getcode-container">
+        <h2 class="section-title">Get Code</h2>
+        
+        <!-- Text input area -->
+        <div class="code-input">
+            <textarea id="codeInput" placeholder="Nhập mã code của bạn vào đây..."></textarea>
+            <button class="submit-code" onclick="checkCode()">Kiểm tra</button>
+        </div>
+
+        <!-- Results table -->
+        <div class="code-results">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mail</th>
+                        <th>Mailadd</th>
+                        <th>From</th>
+                        <th>Time</th>
+                        <th>Content</th>
+                        <th>scan-total-uid</th>
+                        <th>Code</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- Results will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
